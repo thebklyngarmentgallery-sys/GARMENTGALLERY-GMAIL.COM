@@ -148,14 +148,24 @@ const Home = () => {
           <h2>THE CULTURE</h2>
         </div>
         <div className="video-grid">
-          <VideoPlayer 
-            videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-            title="Brooklyn Vibes"
-          />
-          <VideoPlayer 
-            videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-            title="Behind The Scenes"
-          />
+          {videos.length > 0 ? videos.map(video => (
+            <VideoPlayer 
+              key={video.id}
+              videoUrl={video.video_url} 
+              title={video.title}
+            />
+          )) : (
+            <>
+              <div className="video-placeholder">
+                <Play size={48} />
+                <p>Add videos from admin panel</p>
+              </div>
+              <div className="video-placeholder">
+                <Play size={48} />
+                <p>Add videos from admin panel</p>
+              </div>
+            </>
+          )}
         </div>
         <p className="video-caption">Street style. Brooklyn made. Culture driven.</p>
       </section>
