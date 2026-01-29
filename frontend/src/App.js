@@ -844,7 +844,9 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
     price: product?.price || "",
     category: product?.category || "tees",
     image_url: product?.image_url || "",
+    images: product?.images || [],
     sizes: product?.sizes?.join(", ") || "S, M, L, XL, XXL",
+    colors: product?.colors?.join(", ") || "",
     featured: product?.featured || false,
     new_arrival: product?.new_arrival || false,
     in_stock: product?.in_stock ?? true
@@ -854,24 +856,41 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
   const fileInputRef = useRef(null);
 
   const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
+    const uploadedUrls = [...form.images];
 
     try {
-      const res = await axios.post(`${API}/upload/image`, formData, {
-        headers: { ...headers, 'Content-Type': 'multipart/form-data' }
-      });
-      const fullUrl = `${BACKEND_URL}${res.data.url}`;
-      setForm({...form, image_url: fullUrl});
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await axios.post(`${API}/upload/image`, formData, {
+          headers: { ...headers, 'Content-Type': 'multipart/form-data' }
+        });
+        const fullUrl = `${BACKEND_URL}${res.data.url}`;
+        uploadedUrls.push(fullUrl);
+      }
+      
+      // Set first image as main if not set
+      const mainImage = form.image_url || uploadedUrls[0];
+      setForm({...form, image_url: mainImage, images: uploadedUrls});
     } catch (e) {
-      alert("Error uploading image: " + (e.response?.data?.detail || e.message));
+      alert("Error uploading images: " + (e.response?.data?.detail || e.message));
     } finally {
       setUploading(false);
     }
+  };
+
+  const removeImage = (index) => {
+    const newImages = form.images.filter((_, i) => i !== index);
+    const newMainImage = newImages[0] || "";
+    setForm({...form, images: newImages, image_url: newMainImage});
+  };
+
+  const setMainImage = (url) => {
+    setForm({...form, image_url: url});
   };
 
   const handleSubmit = async (e) => {
@@ -881,7 +900,8 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
     const data = {
       ...form,
       price: parseFloat(form.price),
-      sizes: form.sizes.split(",").map(s => s.trim()).filter(Boolean)
+      sizes: form.sizes.split(",").map(s => s.trim()).filter(Boolean),
+      colors: form.colors.split(",").map(s => s.trim()).filter(Boolean)
     };
 
     try {
@@ -897,6 +917,8 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
       setLoading(false);
     }
   };
+
+  const colorOptions = ["Black", "White", "Red", "Blue", "Green", "Yellow", "Orange", "Purple", "Pink", "Gray", "Navy", "Brown"];
 
   return (
     <div className="modal-overlay" data-testid="product-form-modal">
@@ -967,13 +989,47 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
           </div>
 
           <div className="form-group">
-            <label>PRODUCT IMAGE *</label>
+            <label>COLORS</label>
+            <div className="color-picker">
+              {colorOptions.map(color => (
+                <button
+                  key={color}
+                  type="button"
+                  className={`color-option ${form.colors.includes(color) ? 'selected' : ''}`}
+                  style={{backgroundColor: color.toLowerCase()}}
+                  onClick={() => {
+                    const currentColors = form.colors ? form.colors.split(",").map(s => s.trim()).filter(Boolean) : [];
+                    if (currentColors.includes(color)) {
+                      setForm({...form, colors: currentColors.filter(c => c !== color).join(", ")});
+                    } else {
+                      setForm({...form, colors: [...currentColors, color].join(", ")});
+                    }
+                  }}
+                  title={color}
+                >
+                  {form.colors.includes(color) && <span className="color-check">✓</span>}
+                </button>
+              ))}
+            </div>
+            <input 
+              type="text" 
+              value={form.colors} 
+              onChange={(e) => setForm({...form, colors: e.target.value})}
+              placeholder="Or type custom colors (comma separated)"
+              className="color-input"
+              data-testid="product-colors-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>PRODUCT IMAGES *</label>
             <div className="upload-section">
               <input 
                 type="file" 
                 ref={fileInputRef}
                 onChange={handleFileUpload}
                 accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                multiple
                 style={{display: 'none'}}
                 data-testid="product-file-input"
               />
@@ -983,20 +1039,34 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
               >
-                <Upload size={18} /> {uploading ? "UPLOADING..." : "UPLOAD FROM PHONE"}
+                <Upload size={18} /> {uploading ? "UPLOADING..." : "UPLOAD MULTIPLE IMAGES"}
               </button>
               <span className="upload-or">or paste URL:</span>
               <input 
                 type="url" 
                 value={form.image_url} 
-                onChange={(e) => setForm({...form, image_url: e.target.value})}
+                onChange={(e) => {
+                  const url = e.target.value;
+                  if (url && !form.images.includes(url)) {
+                    setForm({...form, image_url: url, images: [...form.images, url]});
+                  } else {
+                    setForm({...form, image_url: url});
+                  }
+                }}
                 placeholder="https://..."
                 data-testid="product-image-input"
               />
             </div>
-            {form.image_url && (
-              <div className="image-preview">
-                <img src={form.image_url} alt="Preview" />
+            
+            {form.images.length > 0 && (
+              <div className="images-grid">
+                {form.images.map((img, index) => (
+                  <div key={index} className={`image-thumb ${form.image_url === img ? 'main' : ''}`}>
+                    <img src={img} alt={`Product ${index + 1}`} onClick={() => setMainImage(img)} />
+                    <button type="button" className="remove-image" onClick={() => removeImage(index)}>×</button>
+                    {form.image_url === img && <span className="main-badge">MAIN</span>}
+                  </div>
+                ))}
               </div>
             )}
           </div>
