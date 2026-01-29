@@ -9,12 +9,12 @@ const API = `${BACKEND_URL}/api`;
 
 // Brand Assets
 const LION_LOGO = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/52egaafw_Screenshot_20260127_224900_Motionleap.png";
-const STORE_BG = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/onpfn087_Screenshot_20260127_230855_DuckDuckGo.jpg";
-const BROOKLYN_STREET_BG = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/wsbrp0qe_Screenshot_20260127_230834_DuckDuckGo.jpg";
-const BROOKLYN_STREET_SCENE = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/8oq0aurq_Screenshot_20260127_230606_DuckDuckGo.jpg";
+const STORE_BG = "https://images.unsplash.com/photo-1655150344455-cf10ef0026cf?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwzfHxjb2xvcmZ1bCUyMGNsb3RoaW5nJTIwc3RvcmUlMjByZXRhaWwlMjBib3V0aXF1ZSUyMGJyaWdodHxlbnwwfHx8fDE3Njk3MjI3NDF8MA&ixlib=rb-4.1.0&q=85";
+const BROOKLYN_STREET_BG = "https://images.unsplash.com/photo-1665939281672-422681977cb6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2MzR8MHwxfHNlYXJjaHwyfHx3b21hbiUyMGRhbmNpbmclMjBzdHJlZXQlMjB1cmJhbiUyMGNpdHklMjBjb2xvcmZ1bCUyMGZhc2hpb258ZW58MHx8fHwxNzY5NzIyNzQzfDA&ixlib=rb-4.1.0&q=85";
+const BROOKLYN_STREET_SCENE = "https://images.pexels.com/photos/3780537/pexels-photo-3780537.jpeg";
 const BROOKLYN_LICENSE_PLATE = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/o3trk9s8_Screenshot_20260127_230457_DuckDuckGo.jpg";
 const BROOKLYN_BRIDGE_NIGHT = "https://images.unsplash.com/photo-1568746370642-e4c0851aef8b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwzfHxCcm9va2x5biUyMGJyaWRnZSUyMG5pZ2h0JTIwdXJiYW4lMjBjaXR5c2NhcGV8ZW58MHx8fHwxNzY5NzIyMzA0fDA&ixlib=rb-4.1.0&q=85";
-const BRICK_WALL_BG = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/bzzm2f7u_Screenshot_20260127_230555_DuckDuckGo.jpg";
+const BRICK_WALL_BG = "https://images.unsplash.com/photo-1665852690035-a951e991ccc7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzOTB8MHwxfHNlYXJjaHwyfHxicmljayUyMHdhbGwlMjBuZW9uJTIwc2lnbiUyMHVyYmFuJTIwZ3JhZmZpdGklMjBjb2xvcmZ1bHxlbnwwfHx8fDE3Njk3MjI3NDZ8MA&ixlib=rb-4.1.0&q=85";
 
 // ============ NAVBAR ============
 const Navbar = () => {
