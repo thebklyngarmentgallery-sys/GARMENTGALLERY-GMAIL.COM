@@ -1,5 +1,6 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -11,9 +12,17 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 import jwt
+import shutil
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Create uploads directories
+UPLOAD_DIR = ROOT_DIR / "uploads"
+IMAGES_DIR = UPLOAD_DIR / "images"
+VIDEOS_DIR = UPLOAD_DIR / "videos"
+IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+VIDEOS_DIR.mkdir(parents=True, exist_ok=True)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -23,8 +32,14 @@ db = client[os.environ['DB_NAME']]
 # JWT Secret
 JWT_SECRET = os.environ.get('JWT_SECRET', 'bklyn-garment-secret-2020')
 
+# Get backend URL for generating file URLs
+BACKEND_URL = os.environ.get('BACKEND_URL', '')
+
 # Create the main app
 app = FastAPI(title="The Bklyn Garment Gallery API")
+
+# Mount static files for uploads
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
