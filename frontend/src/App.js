@@ -859,15 +859,25 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
+    // Check file sizes (warn if over 5MB)
+    const largeFiles = files.filter(f => f.size > 5 * 1024 * 1024);
+    if (largeFiles.length > 0) {
+      alert(`Note: ${largeFiles.length} file(s) are over 5MB. Large files may take longer to upload on mobile.`);
+    }
+
     setUploading(true);
     const uploadedUrls = [...form.images];
+    let uploadCount = 0;
 
     try {
       for (const file of files) {
         const formData = new FormData();
         formData.append('file', file);
+        uploadCount++;
+        
         const res = await axios.post(`${API}/upload/image`, formData, {
-          headers: { ...headers, 'Content-Type': 'multipart/form-data' }
+          headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+          timeout: 120000 // 2 minute timeout for large files
         });
         const fullUrl = `${BACKEND_URL}${res.data.url}`;
         uploadedUrls.push(fullUrl);
@@ -876,8 +886,9 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
       // Set first image as main if not set
       const mainImage = form.image_url || uploadedUrls[0];
       setForm({...form, image_url: mainImage, images: uploadedUrls});
+      alert(`Successfully uploaded ${uploadCount} image(s)!`);
     } catch (e) {
-      alert("Error uploading images: " + (e.response?.data?.detail || e.message));
+      alert("Error uploading images: " + (e.response?.data?.detail || e.message) + "\n\nTip: Try uploading fewer images at once, or use smaller file sizes.");
     } finally {
       setUploading(false);
     }
