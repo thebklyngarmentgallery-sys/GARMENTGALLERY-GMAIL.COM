@@ -1172,6 +1172,29 @@ const VideoForm = ({ onClose, onSave, headers }) => {
     description: ""
   });
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await axios.post(`${API}/upload/video`, formData, {
+        headers: { ...headers, 'Content-Type': 'multipart/form-data' }
+      });
+      const fullUrl = `${BACKEND_URL}${res.data.url}`;
+      setForm({...form, video_url: fullUrl});
+    } catch (e) {
+      alert("Error uploading video: " + (e.response?.data?.detail || e.message));
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1208,16 +1231,34 @@ const VideoForm = ({ onClose, onSave, headers }) => {
           </div>
 
           <div className="form-group">
-            <label>VIDEO URL *</label>
-            <input 
-              type="url" 
-              value={form.video_url} 
-              onChange={(e) => setForm({...form, video_url: e.target.value})}
-              placeholder="YouTube URL (e.g. https://www.youtube.com/watch?v=...)"
-              required
-              data-testid="video-url-input"
-            />
-            <p className="form-hint">Supports YouTube links</p>
+            <label>VIDEO *</label>
+            <div className="upload-section">
+              <input 
+                type="file" 
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept="video/mp4,video/quicktime,video/x-msvideo,video/webm"
+                style={{display: 'none'}}
+                data-testid="video-file-input"
+              />
+              <button 
+                type="button" 
+                className="btn btn-upload"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+              >
+                <Upload size={18} /> {uploading ? "UPLOADING..." : "UPLOAD MP4 FROM PHONE"}
+              </button>
+              <span className="upload-or">or paste YouTube URL:</span>
+              <input 
+                type="url" 
+                value={form.video_url} 
+                onChange={(e) => setForm({...form, video_url: e.target.value})}
+                placeholder="https://www.youtube.com/watch?v=..."
+                data-testid="video-url-input"
+              />
+            </div>
+            <p className="form-hint">Supports MP4 uploads and YouTube links</p>
           </div>
 
           <div className="form-group">
@@ -1231,7 +1272,7 @@ const VideoForm = ({ onClose, onSave, headers }) => {
 
           <div className="form-actions">
             <button type="button" onClick={onClose} className="btn btn-outline">CANCEL</button>
-            <button type="submit" className="btn btn-primary" disabled={loading} data-testid="save-video-btn">
+            <button type="submit" className="btn btn-primary" disabled={loading || !form.video_url} data-testid="save-video-btn">
               {loading ? "SAVING..." : "SAVE VIDEO"}
             </button>
           </div>
