@@ -763,6 +763,47 @@ const AdminDashboard = ({ onLogout }) => {
           </div>
         </div>
       )}
+
+      {activeTab === "videos" && (
+        <div className="admin-section">
+          <div className="section-actions">
+            <button 
+              className="btn btn-primary" 
+              onClick={() => setShowVideoForm(true)}
+              data-testid="add-video-btn"
+            >
+              <Plus size={16} /> ADD VIDEO
+            </button>
+          </div>
+
+          {showVideoForm && (
+            <VideoForm 
+              onClose={() => setShowVideoForm(false)}
+              onSave={() => { fetchData(); setShowVideoForm(false); }}
+              headers={headers}
+            />
+          )}
+
+          <div className="admin-grid">
+            {videos.map(video => (
+              <div key={video.id} className="admin-card video" data-testid={`admin-video-${video.id}`}>
+                <div className="video-thumb">
+                  <Play size={32} />
+                </div>
+                <div className="admin-card-info">
+                  <h3>{video.title}</h3>
+                  <p className="video-url">{video.video_url}</p>
+                </div>
+                <div className="admin-card-actions">
+                  <button onClick={() => handleDeleteVideo(video.id)} className="delete" data-testid={`delete-video-${video.id}`}>
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
