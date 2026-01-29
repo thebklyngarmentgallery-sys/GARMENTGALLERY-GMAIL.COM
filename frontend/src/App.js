@@ -130,6 +130,25 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Video Showcase Section */}
+      <section className="video-section" data-testid="video-section">
+        <div className="section-header center">
+          <span className="section-label yellow">SEE IT IN ACTION</span>
+          <h2>THE CULTURE</h2>
+        </div>
+        <div className="video-grid">
+          <VideoPlayer 
+            videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+            title="Brooklyn Vibes"
+          />
+          <VideoPlayer 
+            videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+            title="Behind The Scenes"
+          />
+        </div>
+        <p className="video-caption">Street style. Brooklyn made. Culture driven.</p>
+      </section>
+
       {/* Just Dropped Section */}
       <section className="section dark" data-testid="new-arrivals-section">
         <div className="section-header">
