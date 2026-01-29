@@ -10,7 +10,7 @@ const API = `${BACKEND_URL}/api`;
 // Brand Assets
 const LION_LOGO = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/52egaafw_Screenshot_20260127_224900_Motionleap.png";
 const STORE_BG = "https://images.unsplash.com/photo-1655150344455-cf10ef0026cf?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwzfHxjb2xvcmZ1bCUyMGNsb3RoaW5nJTIwc3RvcmUlMjByZXRhaWwlMjBib3V0aXF1ZSUyMGJyaWdodHxlbnwwfHx8fDE3Njk3MjI3NDF8MA&ixlib=rb-4.1.0&q=85";
-const BROOKLYN_STREET_BG = "https://images.unsplash.com/photo-1665939281672-422681977cb6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2MzR8MHwxfHNlYXJjaHwyfHx3b21hbiUyMGRhbmNpbmclMjBzdHJlZXQlMjB1cmJhbiUyMGNpdHklMjBjb2xvcmZ1bCUyMGZhc2hpb258ZW58MHx8fHwxNzY5NzIyNzQzfDA&ixlib=rb-4.1.0&q=85";
+const BROOKLYN_STREET_BG = "https://images.unsplash.com/photo-1558573768-5a2ef48319d7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGRhbmNpbmclMjBCcm9va2x5biUyME1hbmhhdHRhbiUyMEJyaWRnZSUyMERVTUJPJTIwc3RyZWV0fGVufDB8fHx8MTc2OTcyMzU4MXww&ixlib=rb-4.1.0&q=85";
 const BROOKLYN_STREET_SCENE = "https://images.unsplash.com/photo-1618554776245-6b23d506c3e1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwxfHxibGFjayUyMHdvbWFuJTIwc3RyZWV0JTIwc3R5bGUlMjBmYXNoaW9uJTIwdXJiYW4lMjBjb25maWRlbnQlMjBiZWF1dGlmdWx8ZW58MHx8fHwxNzY5NzIzMDE3fDA&ixlib=rb-4.1.0&q=85";
 const BROOKLYN_LICENSE_PLATE = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/o3trk9s8_Screenshot_20260127_230457_DuckDuckGo.jpg";
 const BROOKLYN_BRIDGE_NIGHT = "https://images.unsplash.com/photo-1568746370642-e4c0851aef8b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwzfHxCcm9va2x5biUyMGJyaWRnZSUyMG5pZ2h0JTIwdXJiYW4lMjBjaXR5c2NhcGV8ZW58MHx8fHwxNzY5NzIyMzA0fDA&ixlib=rb-4.1.0&q=85";
