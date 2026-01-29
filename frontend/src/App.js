@@ -1054,6 +1054,83 @@ const LookbookForm = ({ onClose, onSave, headers }) => {
   );
 };
 
+// ============ VIDEO FORM ============
+const VideoForm = ({ onClose, onSave, headers }) => {
+  const [form, setForm] = useState({
+    title: "",
+    video_url: "",
+    description: ""
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await axios.post(`${API}/videos`, form, { headers });
+      onSave();
+    } catch (e) {
+      alert("Error saving video: " + (e.response?.data?.detail || e.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="modal-overlay" data-testid="video-form-modal">
+      <div className="modal">
+        <div className="modal-header">
+          <h2>ADD VIDEO</h2>
+          <button onClick={onClose} className="close-btn">&times;</button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>TITLE *</label>
+            <input 
+              type="text" 
+              value={form.title} 
+              onChange={(e) => setForm({...form, title: e.target.value})}
+              placeholder="e.g. Brooklyn Vibes"
+              required
+              data-testid="video-title-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>VIDEO URL *</label>
+            <input 
+              type="url" 
+              value={form.video_url} 
+              onChange={(e) => setForm({...form, video_url: e.target.value})}
+              placeholder="YouTube URL (e.g. https://www.youtube.com/watch?v=...)"
+              required
+              data-testid="video-url-input"
+            />
+            <p className="form-hint">Supports YouTube links</p>
+          </div>
+
+          <div className="form-group">
+            <label>DESCRIPTION (optional)</label>
+            <textarea 
+              value={form.description} 
+              onChange={(e) => setForm({...form, description: e.target.value})}
+              data-testid="video-description-input"
+            />
+          </div>
+
+          <div className="form-actions">
+            <button type="button" onClick={onClose} className="btn btn-outline">CANCEL</button>
+            <button type="submit" className="btn btn-primary" disabled={loading} data-testid="save-video-btn">
+              {loading ? "SAVING..." : "SAVE VIDEO"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 // ============ ADMIN PAGE WRAPPER ============
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
