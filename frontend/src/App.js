@@ -665,6 +665,13 @@ const AdminDashboard = ({ onLogout }) => {
           Products ({products.length})
         </button>
         <button 
+          className={activeTab === "videos" ? "active" : ""} 
+          onClick={() => setActiveTab("videos")}
+          data-testid="videos-tab"
+        >
+          Videos ({videos.length})
+        </button>
+        <button 
           className={activeTab === "lookbook" ? "active" : ""} 
           onClick={() => setActiveTab("lookbook")}
           data-testid="lookbook-tab"
