@@ -206,6 +206,26 @@ const Home = () => {
         <Link to="/shop" className="btn btn-primary">SHOP NOW <ArrowRight size={18} /></Link>
       </section>
 
+      {/* Born in Brooklyn Section */}
+      <section className="born-in-brooklyn" data-testid="born-section" style={{backgroundImage: `url(${BRICK_WALL_BG})`}}>
+        <div className="born-overlay"></div>
+        <div className="born-content">
+          <span className="section-label orange">OUR STORY</span>
+          <h2><span className="born-text">BORN IN</span><br/><span className="brooklyn-text">BROOKLYN</span></h2>
+          <p>The Bklyn Garment Gallery was founded in 2020 with a simple mission: create high-quality, unisex streetwear that celebrates the raw energy and creativity of Brooklyn's diverse culture.</p>
+          <Link to="/about" className="btn btn-primary">LEARN MORE</Link>
+        </div>
+      </section>
+
+      {/* Brooklyn Bridge Night */}
+      <section className="brooklyn-bridge-section" data-testid="bridge-section" style={{backgroundImage: `url(${BROOKLYN_BRIDGE_NIGHT})`}}>
+        <div className="bridge-overlay"></div>
+        <div className="bridge-content">
+          <h2>BROOKLYN NIGHTS</h2>
+          <p>From the streets to the skyline</p>
+        </div>
+      </section>
+
       {/* Connect With Us Section */}
       <section className="connect-section" data-testid="connect-section">
         <span className="section-label red">GET IN TOUCH</span>
