@@ -463,6 +463,48 @@ a {
   font-style: italic;
 }
 
+.video-placeholder {
+  aspect-ratio: 16/9;
+  background: var(--bg-secondary);
+  border: 2px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.video-placeholder p {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.form-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.admin-card.video {
+  display: flex;
+  flex-direction: column;
+}
+
+.video-thumb {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.video-url {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
 /* ============ CONNECT SECTION ============ */
 .connect-section {
   padding: 5rem 1.5rem;
