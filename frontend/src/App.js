@@ -11,6 +11,7 @@ const API = `${BACKEND_URL}/api`;
 const LION_LOGO = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/52egaafw_Screenshot_20260127_224900_Motionleap.png";
 const STORE_BG = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/6by5inuw_Screenshot_20260127_230855_DuckDuckGo.jpg";
 const BROOKLYN_STREET_BG = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/dcdmq9v9_Screenshot_20260127_230834_DuckDuckGo.jpg";
+const BROOKLYN_STREET_SCENE = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/qw30zhxq_Screenshot_20260127_230606_DuckDuckGo.jpg";
 
 // ============ NAVBAR ============
 const Navbar = () => {
