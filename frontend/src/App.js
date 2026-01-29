@@ -144,6 +144,11 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Brooklyn License Plate */}
+      <section className="brooklyn-plate-section" data-testid="brooklyn-plate">
+        <img src={BROOKLYN_LICENSE_PLATE} alt="Brooklyn License Plate" />
+      </section>
+
       {/* Video Showcase Section */}
       <section className="video-section" data-testid="video-section">
         <div className="section-header center">
