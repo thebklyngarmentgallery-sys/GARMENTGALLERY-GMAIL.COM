@@ -293,8 +293,52 @@ async def root():
 async def health():
     return {"status": "healthy", "service": "bklyn-garment-gallery"}
 
+# ============ FILE UPLOAD ENDPOINTS ============
+
+ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"]
+ALLOWED_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/x-msvideo", "video/webm"]
+
+@api_router.post("/upload/image")
+async def upload_image(file: UploadFile = File(...), payload: dict = Depends(verify_token)):
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(status_code=400, detail=f"Invalid file type. Allowed: JPEG, PNG, WebP, GIF")
+    
+    # Generate unique filename
+    file_ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    unique_filename = f"{uuid.uuid4()}.{file_ext}"
+    file_path = IMAGES_DIR / unique_filename
+    
+    # Save file
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    # Return the URL path
+    file_url = f"/api/uploads/images/{unique_filename}"
+    return {"url": file_url, "filename": unique_filename}
+
+@api_router.post("/upload/video")
+async def upload_video(file: UploadFile = File(...), payload: dict = Depends(verify_token)):
+    if file.content_type not in ALLOWED_VIDEO_TYPES:
+        raise HTTPException(status_code=400, detail=f"Invalid file type. Allowed: MP4, MOV, AVI, WebM")
+    
+    # Generate unique filename
+    file_ext = file.filename.split(".")[-1] if "." in file.filename else "mp4"
+    unique_filename = f"{uuid.uuid4()}.{file_ext}"
+    file_path = VIDEOS_DIR / unique_filename
+    
+    # Save file
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    # Return the URL path
+    file_url = f"/api/uploads/videos/{unique_filename}"
+    return {"url": file_url, "filename": unique_filename}
+
 # Include router and middleware
 app.include_router(api_router)
+
+# Mount uploads AFTER router to avoid conflicts
+app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,
