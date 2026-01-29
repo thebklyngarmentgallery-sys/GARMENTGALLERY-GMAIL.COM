@@ -197,6 +197,45 @@ const Home = () => {
   );
 };
 
+// ============ VIDEO PLAYER ============
+const VideoPlayer = ({ videoUrl, title }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  
+  // Convert YouTube URL to embed format if needed
+  const getEmbedUrl = (url) => {
+    if (url.includes('youtube.com/watch')) {
+      const videoId = url.split('v=')[1]?.split('&')[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    return url;
+  };
+
+  return (
+    <div className="video-player" data-testid="video-player">
+      {!isPlaying ? (
+        <div className="video-thumbnail" onClick={() => setIsPlaying(true)}>
+          <div className="play-button">
+            <Play size={48} fill="white" />
+          </div>
+          <p className="video-title">{title}</p>
+        </div>
+      ) : (
+        <iframe
+          src={`${getEmbedUrl(videoUrl)}?autoplay=1`}
+          title={title}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      )}
+    </div>
+  );
+};
+
 // ============ PRODUCT CARD ============
 const ProductCard = ({ product }) => (
   <Link to={`/product/${product.id}`} className="product-card" data-testid={`product-card-${product.id}`}>
