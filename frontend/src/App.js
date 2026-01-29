@@ -1051,6 +1051,29 @@ const LookbookForm = ({ onClose, onSave, headers }) => {
     description: ""
   });
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await axios.post(`${API}/upload/image`, formData, {
+        headers: { ...headers, 'Content-Type': 'multipart/form-data' }
+      });
+      const fullUrl = `${BACKEND_URL}${res.data.url}`;
+      setForm({...form, image_url: fullUrl});
+    } catch (e) {
+      alert("Error uploading image: " + (e.response?.data?.detail || e.message));
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1086,15 +1109,33 @@ const LookbookForm = ({ onClose, onSave, headers }) => {
           </div>
 
           <div className="form-group">
-            <label>IMAGE URL *</label>
-            <input 
-              type="url" 
-              value={form.image_url} 
-              onChange={(e) => setForm({...form, image_url: e.target.value})}
-              placeholder="https://..."
-              required
-              data-testid="lookbook-image-input"
-            />
+            <label>IMAGE *</label>
+            <div className="upload-section">
+              <input 
+                type="file" 
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                style={{display: 'none'}}
+                data-testid="lookbook-file-input"
+              />
+              <button 
+                type="button" 
+                className="btn btn-upload"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+              >
+                <Upload size={18} /> {uploading ? "UPLOADING..." : "UPLOAD FROM PHONE"}
+              </button>
+              <span className="upload-or">or paste URL:</span>
+              <input 
+                type="url" 
+                value={form.image_url} 
+                onChange={(e) => setForm({...form, image_url: e.target.value})}
+                placeholder="https://..."
+                data-testid="lookbook-image-input"
+              />
+            </div>
             {form.image_url && (
               <div className="image-preview">
                 <img src={form.image_url} alt="Preview" />
@@ -1113,7 +1154,7 @@ const LookbookForm = ({ onClose, onSave, headers }) => {
 
           <div className="form-actions">
             <button type="button" onClick={onClose} className="btn btn-outline">CANCEL</button>
-            <button type="submit" className="btn btn-primary" disabled={loading} data-testid="save-lookbook-btn">
+            <button type="submit" className="btn btn-primary" disabled={loading || !form.image_url} data-testid="save-lookbook-btn">
               {loading ? "SAVING..." : "SAVE"}
             </button>
           </div>
