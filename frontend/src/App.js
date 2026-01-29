@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { ShoppingBag, Menu, X, Instagram, Twitter, ChevronRight, Plus, Edit2, Trash2, LogOut, Upload, Image } from "lucide-react";
+import { Menu, X, Instagram, Twitter, ArrowRight, Plus, Edit2, Trash2, LogOut, Filter, ChevronDown } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 // Brand Assets
-const LOGO_URL = "https://customer-assets.emergentagent.com/job_bklyn-garment/artifacts/1r1tm1n1_Screenshot_20260118_214108_Text%20on%20Video%20%281%29.png";
+const LION_LOGO = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/52egaafw_Screenshot_20260127_224900_Motionleap.png";
+const STORE_BG = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/6by5inuw_Screenshot_20260127_230855_DuckDuckGo.jpg";
+const BROOKLYN_STREET_BG = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/dcdmq9v9_Screenshot_20260127_230834_DuckDuckGo.jpg";
 
 // ============ NAVBAR ============
 const Navbar = () => {
@@ -18,7 +20,7 @@ const Navbar = () => {
     <nav className="navbar" data-testid="navbar">
       <div className="nav-container">
         <Link to="/" className="nav-logo" data-testid="nav-logo">
-          <img src={LOGO_URL} alt="The Bklyn Garment Gallery" />
+          <img src={LION_LOGO} alt="The Bklyn Garment Gallery" />
         </Link>
         
         <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
@@ -42,7 +44,7 @@ const Footer = () => (
   <footer className="footer" data-testid="footer">
     <div className="footer-container">
       <div className="footer-brand">
-        <img src={LOGO_URL} alt="The Bklyn Garment Gallery" className="footer-logo" />
+        <img src={LION_LOGO} alt="The Bklyn Garment Gallery" className="footer-logo" />
         <p>Unisex streetwear for the culture.<br />Born in Brooklyn, shipped worldwide.</p>
       </div>
       <div className="footer-links">
@@ -97,49 +99,41 @@ const Home = () => {
   return (
     <div className="home" data-testid="home-page">
       {/* Hero Section */}
-      <section className="hero" data-testid="hero-section">
+      <section className="hero" data-testid="hero-section" style={{backgroundImage: `url(${STORE_BG})`}}>
+        <div className="hero-overlay"></div>
         <div className="hero-content">
-          <img src={LOGO_URL} alt="The Bklyn Garment Gallery Est.2020" className="hero-logo" />
+          <img src={LION_LOGO} alt="The Bklyn Garment Gallery Est.2020" className="hero-logo" />
           <p className="hero-tagline">Unisex streetwear for the culture. Born in Brooklyn, shipped worldwide.</p>
           <div className="hero-buttons">
-            <Link to="/shop" className="btn btn-primary" data-testid="shop-now-btn">Shop Now</Link>
-            <Link to="/lookbook" className="btn btn-secondary" data-testid="view-lookbook-btn">View Lookbook</Link>
+            <Link to="/shop" className="btn btn-primary" data-testid="shop-now-btn">
+              SHOP NOW <ArrowRight size={18} />
+            </Link>
+            <Link to="/lookbook" className="btn btn-outline" data-testid="view-lookbook-btn">
+              VIEW LOOKBOOK
+            </Link>
+          </div>
+          <div className="scroll-indicator">
+            <ChevronDown size={24} />
           </div>
         </div>
       </section>
 
-      {/* Featured Section */}
-      <section className="section" data-testid="featured-section">
-        <div className="section-header">
-          <span className="section-label">Collection</span>
-          <h2>Featured</h2>
-          <Link to="/shop" className="view-all">View All <ChevronRight size={16} /></Link>
-        </div>
-        <div className="product-grid">
-          {featuredProducts.length > 0 ? featuredProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
-          )) : (
-            <p className="no-products">No featured products yet. Add some from the admin panel!</p>
-          )}
-        </div>
-      </section>
-
-      {/* Made to Order Section */}
-      <section className="mto-section" data-testid="mto-section">
-        <div className="mto-content">
+      {/* Made to Order Section - Brooklyn Street */}
+      <section className="mto-hero" data-testid="mto-section" style={{backgroundImage: `url(${BROOKLYN_STREET_BG})`}}>
+        <div className="mto-overlay"></div>
+        <div className="mto-hero-content">
           <h2>MADE TO ORDER</h2>
-          <p>Every piece is printed fresh in Brooklyn by our partners at <strong>Aesthetic BK</strong>.</p>
+          <p className="mto-description">Every piece is printed fresh in Brooklyn by our partners at Aesthetic BK.</p>
           <p className="mto-time">7-10 days print time + shipping worldwide</p>
-          <Link to="/shop" className="btn btn-primary">Shop Collection</Link>
+          <Link to="/shop" className="btn btn-primary">SHOP COLLECTION</Link>
         </div>
       </section>
 
-      {/* New Arrivals Section */}
-      <section className="section" data-testid="new-arrivals-section">
+      {/* Just Dropped Section */}
+      <section className="section dark" data-testid="new-arrivals-section">
         <div className="section-header">
-          <span className="section-label">Just Dropped</span>
+          <span className="section-label yellow">JUST DROPPED</span>
           <h2>New Arrivals</h2>
-          <Link to="/shop" className="view-all">View All <ChevronRight size={16} /></Link>
         </div>
         <div className="product-grid">
           {newArrivals.length > 0 ? newArrivals.map(product => (
@@ -150,17 +144,17 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Our Story Section */}
-      <section className="story-section" data-testid="story-section">
-        <div className="story-image">
-          <img src="https://images.unsplash.com/photo-1602152427184-7ab78e93fb63?w=800" alt="Brooklyn streetwear" />
-        </div>
-        <div className="story-content">
-          <span className="section-label">Our Story</span>
-          <h2>Born in Brooklyn</h2>
-          <p>The Bklyn Garment Gallery was founded in 2020 with a simple mission: create high-quality, unisex streetwear that celebrates the raw energy and creativity of Brooklyn's diverse culture.</p>
-          <Link to="/about" className="btn btn-secondary">Learn More</Link>
-        </div>
+      {/* Worldwide Made to Order Details */}
+      <section className="mto-details" data-testid="mto-details">
+        <span className="section-label red">WORLDWIDE</span>
+        <h2>MADE TO ORDER</h2>
+        <p className="mto-text">Every garment is printed fresh when you order. We partner with Aesthetic BK, a local Brooklyn print house, to ensure the highest quality on every piece.</p>
+        <ul className="mto-list">
+          <li>7-10 days print time</li>
+          <li>Printed in Brooklyn by Aesthetic BK</li>
+          <li>Worldwide shipping available</li>
+        </ul>
+        <Link to="/shop" className="btn btn-primary">SHOP NOW <ArrowRight size={18} /></Link>
       </section>
     </div>
   );
@@ -171,11 +165,10 @@ const ProductCard = ({ product }) => (
   <Link to={`/product/${product.id}`} className="product-card" data-testid={`product-card-${product.id}`}>
     <div className="product-image">
       <img src={product.image_url} alt={product.name} />
-      {product.new_arrival && <span className="badge new">New</span>}
+      {product.new_arrival && <span className="badge-new">NEW</span>}
     </div>
     <div className="product-info">
       <h3>{product.name}</h3>
-      <p className="product-category">{product.category}</p>
       <p className="product-price">${product.price.toFixed(2)}</p>
     </div>
   </Link>
@@ -186,6 +179,8 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -211,36 +206,60 @@ const Shop = () => {
     ? products 
     : products.filter(p => p.category === activeCategory);
 
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortBy === "newest") return new Date(b.created_at) - new Date(a.created_at);
+    if (sortBy === "price-low") return a.price - b.price;
+    if (sortBy === "price-high") return b.price - a.price;
+    return 0;
+  });
+
   return (
     <div className="shop-page" data-testid="shop-page">
       <div className="shop-header">
-        <h1>Shop All</h1>
-        <p>Premium streetwear, made to order in Brooklyn</p>
+        <span className="section-label yellow">COLLECTION</span>
+        <h1>SHOP</h1>
       </div>
 
-      <div className="category-filter" data-testid="category-filter">
-        <button 
-          className={activeCategory === "all" ? "active" : ""} 
-          onClick={() => setActiveCategory("all")}
-        >
-          All
+      <div className="shop-controls">
+        <button className="filter-btn" onClick={() => setShowFilters(!showFilters)} data-testid="filters-btn">
+          <Filter size={18} /> FILTERS
         </button>
-        {categories.map(cat => (
-          <button 
-            key={cat.id}
-            className={activeCategory === cat.id ? "active" : ""}
-            onClick={() => setActiveCategory(cat.id)}
-          >
-            {cat.name}
-          </button>
-        ))}
+        <div className="sort-dropdown">
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} data-testid="sort-select">
+            <option value="newest">Newest</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
+        </div>
       </div>
+
+      {showFilters && (
+        <div className="filter-panel" data-testid="filter-panel">
+          <button 
+            className={activeCategory === "all" ? "active" : ""} 
+            onClick={() => setActiveCategory("all")}
+          >
+            All
+          </button>
+          {categories.map(cat => (
+            <button 
+              key={cat.id}
+              className={activeCategory === cat.id ? "active" : ""}
+              onClick={() => setActiveCategory(cat.id)}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <p className="product-count">{sortedProducts.length} products</p>
 
       {loading ? (
         <div className="loading">Loading...</div>
       ) : (
-        <div className="product-grid large">
-          {filteredProducts.length > 0 ? filteredProducts.map(product => (
+        <div className="product-grid shop-grid">
+          {sortedProducts.length > 0 ? sortedProducts.map(product => (
             <ProductCard key={product.id} product={product} />
           )) : (
             <p className="no-products">No products in this category yet.</p>
@@ -283,16 +302,17 @@ const ProductDetail = () => {
     <div className="product-detail" data-testid="product-detail-page">
       <div className="product-detail-image">
         <img src={product.image_url} alt={product.name} />
+        {product.new_arrival && <span className="badge-new">NEW</span>}
       </div>
       <div className="product-detail-info">
-        <span className="product-category-label">{product.category}</span>
+        <span className="product-category-label">{product.category.toUpperCase()}</span>
         <h1>{product.name}</h1>
         <p className="product-detail-price">${product.price.toFixed(2)}</p>
         <p className="product-description">{product.description}</p>
         
         {product.sizes?.length > 0 && (
           <div className="size-selector">
-            <label>Size</label>
+            <label>SIZE</label>
             <div className="size-options">
               {product.sizes.map(size => (
                 <button 
@@ -307,13 +327,17 @@ const ProductDetail = () => {
           </div>
         )}
 
-        <button className="btn btn-primary btn-large" data-testid="add-to-cart-btn">
-          <ShoppingBag size={20} /> Add to Cart
+        <button className="btn btn-primary btn-full" data-testid="add-to-cart-btn">
+          ADD TO CART <ArrowRight size={18} />
         </button>
 
         <div className="product-meta">
-          <p><strong>Made to Order</strong> - 7-10 days print time</p>
-          <p>Printed in Brooklyn by Aesthetic BK</p>
+          <h4>MADE TO ORDER</h4>
+          <ul>
+            <li>7-10 days print time</li>
+            <li>Printed in Brooklyn by Aesthetic BK</li>
+            <li>Worldwide shipping available</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -343,7 +367,8 @@ const Lookbook = () => {
   return (
     <div className="lookbook-page" data-testid="lookbook-page">
       <div className="page-header">
-        <h1>Lookbook</h1>
+        <span className="section-label yellow">STYLE</span>
+        <h1>LOOKBOOK</h1>
         <p>Style inspiration from the streets of Brooklyn</p>
       </div>
 
@@ -372,28 +397,26 @@ const Lookbook = () => {
 const About = () => (
   <div className="about-page" data-testid="about-page">
     <div className="page-header">
-      <h1>About Us</h1>
+      <span className="section-label yellow">OUR STORY</span>
+      <h1>ABOUT US</h1>
     </div>
 
     <div className="about-content">
       <div className="about-image">
-        <img src={LOGO_URL} alt="The Bklyn Garment Gallery" />
+        <img src={LION_LOGO} alt="The Bklyn Garment Gallery" />
       </div>
       <div className="about-text">
         <h2>Born in Brooklyn</h2>
         <p>The Bklyn Garment Gallery was established in 2020. Our brand has been cultivated by the culture, and vibe of Brooklyn, and New York City.</p>
         <p>We have artistic and original Garments that stand out in any environment. Pull up and experience Grand style.</p>
         
-        <h3>Made to Order</h3>
-        <p>Every piece is printed fresh in Brooklyn by our partners at <strong>Aesthetic BK</strong>. This means:</p>
+        <h3>MADE TO ORDER</h3>
+        <p>Every garment is printed fresh when you order. We partner with Aesthetic BK, a local Brooklyn print house, to ensure the highest quality on every piece.</p>
         <ul>
-          <li>No waste - we only make what you order</li>
-          <li>Fresh prints every time</li>
-          <li>7-10 days print time + worldwide shipping</li>
+          <li>7-10 days print time</li>
+          <li>Printed in Brooklyn by Aesthetic BK</li>
+          <li>Worldwide shipping available</li>
         </ul>
-
-        <h3>The Culture</h3>
-        <p>Unisex streetwear for the culture. We celebrate the raw energy and creativity of Brooklyn's diverse community through every piece we create.</p>
       </div>
     </div>
   </div>
@@ -425,12 +448,12 @@ const AdminLogin = ({ onLogin }) => {
   return (
     <div className="admin-login" data-testid="admin-login">
       <div className="login-card">
-        <img src={LOGO_URL} alt="Logo" className="login-logo" />
-        <h2>Admin Login</h2>
+        <img src={LION_LOGO} alt="Logo" className="login-logo" />
+        <h2>ADMIN LOGIN</h2>
         {error && <p className="error-message" data-testid="login-error">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Username</label>
+            <label>USERNAME</label>
             <input 
               type="text" 
               value={username} 
@@ -441,7 +464,7 @@ const AdminLogin = ({ onLogin }) => {
             />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label>PASSWORD</label>
             <input 
               type="password" 
               value={password} 
@@ -451,8 +474,8 @@ const AdminLogin = ({ onLogin }) => {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary" disabled={loading} data-testid="login-submit-btn">
-            {loading ? "Logging in..." : "Login"}
+          <button type="submit" className="btn btn-primary btn-full" disabled={loading} data-testid="login-submit-btn">
+            {loading ? "LOGGING IN..." : "LOGIN"}
           </button>
         </form>
       </div>
@@ -515,9 +538,10 @@ const AdminDashboard = ({ onLogout }) => {
   return (
     <div className="admin-dashboard" data-testid="admin-dashboard">
       <div className="admin-header">
-        <h1>Admin Dashboard</h1>
-        <button onClick={onLogout} className="btn btn-secondary" data-testid="logout-btn">
-          <LogOut size={16} /> Logout
+        <img src={LION_LOGO} alt="Logo" className="admin-logo" />
+        <h1>ADMIN DASHBOARD</h1>
+        <button onClick={onLogout} className="btn btn-outline" data-testid="logout-btn">
+          <LogOut size={16} /> LOGOUT
         </button>
       </div>
 
@@ -546,7 +570,7 @@ const AdminDashboard = ({ onLogout }) => {
               onClick={() => { setEditingProduct(null); setShowProductForm(true); }}
               data-testid="add-product-btn"
             >
-              <Plus size={16} /> Add Product
+              <Plus size={16} /> ADD PRODUCT
             </button>
           </div>
 
@@ -563,13 +587,11 @@ const AdminDashboard = ({ onLogout }) => {
             {products.map(product => (
               <div key={product.id} className="admin-card" data-testid={`admin-product-${product.id}`}>
                 <img src={product.image_url} alt={product.name} />
+                {product.new_arrival && <span className="badge-new">NEW</span>}
                 <div className="admin-card-info">
                   <h3>{product.name}</h3>
                   <p>{product.category} - ${product.price.toFixed(2)}</p>
-                  <div className="admin-card-badges">
-                    {product.featured && <span className="badge">Featured</span>}
-                    {product.new_arrival && <span className="badge new">New</span>}
-                  </div>
+                  {product.featured && <span className="badge-featured">Featured</span>}
                 </div>
                 <div className="admin-card-actions">
                   <button onClick={() => { setEditingProduct(product); setShowProductForm(true); }} data-testid={`edit-product-${product.id}`}>
@@ -593,7 +615,7 @@ const AdminDashboard = ({ onLogout }) => {
               onClick={() => setShowLookbookForm(true)}
               data-testid="add-lookbook-btn"
             >
-              <Plus size={16} /> Add Lookbook Image
+              <Plus size={16} /> ADD LOOKBOOK IMAGE
             </button>
           </div>
 
@@ -670,13 +692,13 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
     <div className="modal-overlay" data-testid="product-form-modal">
       <div className="modal">
         <div className="modal-header">
-          <h2>{product ? "Edit Product" : "Add Product"}</h2>
+          <h2>{product ? "EDIT PRODUCT" : "ADD PRODUCT"}</h2>
           <button onClick={onClose} className="close-btn">&times;</button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
-              <label>Name *</label>
+              <label>NAME *</label>
               <input 
                 type="text" 
                 value={form.name} 
@@ -686,7 +708,7 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
               />
             </div>
             <div className="form-group">
-              <label>Price *</label>
+              <label>PRICE *</label>
               <input 
                 type="number" 
                 step="0.01"
@@ -699,7 +721,7 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
           </div>
 
           <div className="form-group">
-            <label>Description *</label>
+            <label>DESCRIPTION *</label>
             <textarea 
               value={form.description} 
               onChange={(e) => setForm({...form, description: e.target.value})}
@@ -710,7 +732,7 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
 
           <div className="form-row">
             <div className="form-group">
-              <label>Category *</label>
+              <label>CATEGORY *</label>
               <select 
                 value={form.category} 
                 onChange={(e) => setForm({...form, category: e.target.value})}
@@ -724,7 +746,7 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
               </select>
             </div>
             <div className="form-group">
-              <label>Sizes (comma separated)</label>
+              <label>SIZES (comma separated)</label>
               <input 
                 type="text" 
                 value={form.sizes} 
@@ -735,7 +757,7 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
           </div>
 
           <div className="form-group">
-            <label>Image URL *</label>
+            <label>IMAGE URL *</label>
             <input 
               type="url" 
               value={form.image_url} 
@@ -782,9 +804,9 @@ const ProductForm = ({ product, onClose, onSave, headers }) => {
           </div>
 
           <div className="form-actions">
-            <button type="button" onClick={onClose} className="btn btn-secondary">Cancel</button>
+            <button type="button" onClick={onClose} className="btn btn-outline">CANCEL</button>
             <button type="submit" className="btn btn-primary" disabled={loading} data-testid="save-product-btn">
-              {loading ? "Saving..." : "Save Product"}
+              {loading ? "SAVING..." : "SAVE PRODUCT"}
             </button>
           </div>
         </form>
@@ -820,12 +842,12 @@ const LookbookForm = ({ onClose, onSave, headers }) => {
     <div className="modal-overlay" data-testid="lookbook-form-modal">
       <div className="modal">
         <div className="modal-header">
-          <h2>Add Lookbook Image</h2>
+          <h2>ADD LOOKBOOK IMAGE</h2>
           <button onClick={onClose} className="close-btn">&times;</button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Title *</label>
+            <label>TITLE *</label>
             <input 
               type="text" 
               value={form.title} 
@@ -836,7 +858,7 @@ const LookbookForm = ({ onClose, onSave, headers }) => {
           </div>
 
           <div className="form-group">
-            <label>Image URL *</label>
+            <label>IMAGE URL *</label>
             <input 
               type="url" 
               value={form.image_url} 
@@ -853,7 +875,7 @@ const LookbookForm = ({ onClose, onSave, headers }) => {
           </div>
 
           <div className="form-group">
-            <label>Description (optional)</label>
+            <label>DESCRIPTION (optional)</label>
             <textarea 
               value={form.description} 
               onChange={(e) => setForm({...form, description: e.target.value})}
@@ -862,9 +884,9 @@ const LookbookForm = ({ onClose, onSave, headers }) => {
           </div>
 
           <div className="form-actions">
-            <button type="button" onClick={onClose} className="btn btn-secondary">Cancel</button>
+            <button type="button" onClick={onClose} className="btn btn-outline">CANCEL</button>
             <button type="submit" className="btn btn-primary" disabled={loading} data-testid="save-lookbook-btn">
-              {loading ? "Saving..." : "Save"}
+              {loading ? "SAVING..." : "SAVE"}
             </button>
           </div>
         </form>
