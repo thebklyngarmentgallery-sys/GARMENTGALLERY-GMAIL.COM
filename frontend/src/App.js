@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Menu, X, Instagram, Twitter, ArrowRight, Plus, Edit2, Trash2, LogOut, Filter, ChevronDown, Play } from "lucide-react";
+import { Menu, X, Instagram, Twitter, ArrowRight, Plus, Edit2, Trash2, LogOut, Filter, ChevronDown, Play, Upload, Image } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
