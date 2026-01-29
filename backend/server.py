@@ -38,9 +38,6 @@ BACKEND_URL = os.environ.get('BACKEND_URL', '')
 # Create the main app
 app = FastAPI(title="The Bklyn Garment Gallery API")
 
-# Mount static files for uploads
-app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
-
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
