@@ -79,9 +79,11 @@ const Footer = () => (
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
+  const [videos, setVideos] = useState([]);
 
   useEffect(() => {
     fetchProducts();
+    fetchVideos();
   }, []);
 
   const fetchProducts = async () => {
@@ -94,6 +96,15 @@ const Home = () => {
       setNewArrivals(newRes.data.slice(0, 4));
     } catch (e) {
       console.error("Error fetching products:", e);
+    }
+  };
+
+  const fetchVideos = async () => {
+    try {
+      const res = await axios.get(`${API}/videos`);
+      setVideos(res.data.slice(0, 4));
+    } catch (e) {
+      console.error("Error fetching videos:", e);
     }
   };
 
