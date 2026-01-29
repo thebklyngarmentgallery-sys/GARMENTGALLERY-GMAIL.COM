@@ -1,16 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --bg-primary: #000000;
-  --bg-secondary: #0a0a0a;
-  --bg-card: #111111;
-  --text-primary: #ffffff;
-  --text-secondary: #999999;
-  --text-muted: #666666;
-  --accent-yellow: #ffd700;
-  --accent-red: #ff3b30;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-card: #ffffff;
+  --bg-dark: #1a1a1a;
+  --text-primary: #1a1a1a;
+  --text-secondary: #555555;
+  --text-muted: #888888;
+  --text-light: #ffffff;
   --accent-orange: #ff6b35;
-  --border: #222222;
+  --accent-red: #ff3b30;
+  --accent-yellow: #ffd700;
+  --accent-pink: #ff69b4;
+  --border: #e0e0e0;
+  --border-dark: #333333;
   --font-heading: 'Oswald', sans-serif;
   --font-body: 'Inter', sans-serif;
 }
@@ -51,7 +55,7 @@ a {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
 }
@@ -86,7 +90,7 @@ a {
 }
 
 .nav-links a:hover {
-  color: var(--text-primary);
+  color: var(--accent-orange);
 }
 
 .nav-actions {
@@ -149,11 +153,11 @@ a {
 
 .btn-primary {
   background: var(--text-primary);
-  color: var(--bg-primary);
+  color: var(--text-light);
 }
 
 .btn-primary:hover {
-  background: var(--text-secondary);
+  background: var(--accent-orange);
   transform: translateY(-2px);
 }
 
@@ -165,7 +169,16 @@ a {
 
 .btn-outline:hover {
   background: var(--text-primary);
-  color: var(--bg-primary);
+  color: var(--text-light);
+}
+
+.btn-white {
+  background: var(--text-light);
+  color: var(--text-primary);
+}
+
+.btn-white:hover {
+  background: var(--accent-yellow);
 }
 
 .btn-full {
@@ -191,7 +204,7 @@ a {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .hero-content {
@@ -208,10 +221,11 @@ a {
 
 .hero-tagline {
   font-size: 1.35rem;
-  color: var(--text-primary);
+  color: var(--text-light);
   margin-bottom: 3rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.8;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .hero-buttons {
@@ -225,8 +239,28 @@ a {
   min-width: 280px;
 }
 
+.hero-buttons .btn-primary {
+  background: var(--text-light);
+  color: var(--text-primary);
+}
+
+.hero-buttons .btn-primary:hover {
+  background: var(--accent-yellow);
+}
+
+.hero-buttons .btn-outline {
+  border-color: var(--text-light);
+  color: var(--text-light);
+}
+
+.hero-buttons .btn-outline:hover {
+  background: var(--text-light);
+  color: var(--text-primary);
+}
+
 .scroll-indicator {
   margin-top: 3rem;
+  color: var(--text-light);
   animation: bounce 2s infinite;
 }
 
@@ -255,7 +289,7 @@ a {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .mto-hero-content {
@@ -270,19 +304,41 @@ a {
   font-weight: 700;
   letter-spacing: 0.05em;
   margin-bottom: 1.5rem;
+  color: var(--text-light);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 .mto-description {
   font-size: 1.2rem;
   font-style: italic;
-  color: var(--text-primary);
+  color: var(--text-light);
   margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .mto-time {
   font-size: 1rem;
-  color: var(--text-secondary);
+  color: var(--text-light);
   margin-bottom: 2rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.mto-hero-content .btn-primary {
+  background: var(--text-light);
+  color: var(--text-primary);
+}
+
+/* ============ BROOKLYN LICENSE PLATE ============ */
+.brooklyn-plate-section {
+  padding: 0;
+  text-align: center;
+  background: var(--bg-secondary);
+}
+
+.brooklyn-plate-section img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
 }
 
 /* ============ SECTIONS ============ */
@@ -293,11 +349,21 @@ a {
 }
 
 .section.dark {
-  background: var(--bg-primary);
+  background: var(--bg-dark);
+  color: var(--text-light);
+  max-width: none;
+}
+
+.section.dark .section-label {
+  color: var(--accent-yellow);
 }
 
 .section-header {
   margin-bottom: 2.5rem;
+}
+
+.section-header.center {
+  text-align: center;
 }
 
 .section-label {
@@ -318,6 +384,10 @@ a {
   color: var(--accent-red);
 }
 
+.section-label.orange {
+  color: var(--accent-orange);
+}
+
 .section-header h2 {
   font-family: var(--font-heading);
   font-size: 2.5rem;
@@ -330,6 +400,7 @@ a {
   padding: 5rem 1.5rem;
   max-width: 800px;
   margin: 0 auto;
+  background: var(--bg-secondary);
 }
 
 .mto-details h2 {
@@ -370,15 +441,113 @@ a {
   background: var(--accent-orange);
 }
 
+/* ============ BORN IN BROOKLYN SECTION ============ */
+.born-in-brooklyn {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 5rem 1.5rem;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.born-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.born-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+}
+
+.born-content h2 {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.born-text {
+  color: var(--text-light);
+}
+
+.brooklyn-text {
+  background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.born-content p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  margin-bottom: 2rem;
+  line-height: 1.8;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.born-content .btn-primary {
+  background: var(--text-light);
+  color: var(--text-primary);
+}
+
+/* ============ BROOKLYN BRIDGE SECTION ============ */
+.brooklyn-bridge-section {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.bridge-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.bridge-content {
+  position: relative;
+  z-index: 1;
+}
+
+.bridge-content h2 {
+  font-family: var(--font-heading);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--text-light);
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.bridge-content p {
+  font-size: 1.25rem;
+  color: var(--text-light);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
 /* ============ VIDEO SECTION ============ */
 .video-section {
   padding: 5rem 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.section-header.center {
-  text-align: center;
+  background: var(--bg-primary);
 }
 
 .video-grid {
@@ -417,35 +586,35 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .video-thumbnail:hover {
-  background: linear-gradient(135deg, #222 0%, #111 100%);
+  background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
 }
 
 .video-thumbnail:hover .play-button {
   transform: scale(1.1);
-  background: var(--accent-red);
+  background: var(--accent-orange);
 }
 
 .play-button {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
 }
 
 .play-button svg {
   margin-left: 5px;
+  color: var(--text-light);
 }
 
 .video-title {
@@ -492,7 +661,7 @@ a {
 
 .video-thumb {
   aspect-ratio: 16/9;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -511,6 +680,7 @@ a {
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
+  background: var(--bg-primary);
 }
 
 .connect-section h2 {
@@ -530,7 +700,7 @@ a {
 .email-link {
   font-family: 'Courier New', monospace;
   font-size: 1.25rem;
-  color: var(--text-primary);
+  color: var(--accent-orange);
   letter-spacing: 0.05em;
   transition: color 0.3s ease;
 }
@@ -596,10 +766,12 @@ a {
   background: var(--bg-card);
   transition: all 0.3s ease;
   overflow: hidden;
+  border: 1px solid var(--border);
 }
 
 .product-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .product-image {
@@ -631,7 +803,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   background: var(--accent-yellow);
-  color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .badge-featured {
@@ -642,7 +814,7 @@ a {
   font-weight: 600;
   text-transform: uppercase;
   background: var(--accent-orange);
-  color: var(--text-primary);
+  color: var(--text-light);
 }
 
 .product-info {
@@ -661,7 +833,7 @@ a {
 .product-price {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--accent-orange);
 }
 
 .no-products {
@@ -676,6 +848,7 @@ a {
   padding: 6rem 1.5rem 4rem;
   max-width: 1400px;
   margin: 0 auto;
+  background: var(--bg-primary);
 }
 
 .shop-header {
@@ -718,17 +891,13 @@ a {
 }
 
 .sort-dropdown select {
-  background: transparent;
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   color: var(--text-primary);
   padding: 0.5rem 1rem;
   font-family: var(--font-body);
   font-size: 0.9rem;
   cursor: pointer;
-}
-
-.sort-dropdown select option {
-  background: var(--bg-primary);
 }
 
 .filter-panel {
@@ -753,7 +922,7 @@ a {
 .filter-panel button:hover,
 .filter-panel button.active {
   background: var(--text-primary);
-  color: var(--bg-primary);
+  color: var(--text-light);
   border-color: var(--text-primary);
 }
 
@@ -795,7 +964,7 @@ a {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--accent-yellow);
+  color: var(--accent-orange);
 }
 
 .product-detail-info h1 {
@@ -809,6 +978,7 @@ a {
   font-size: 1.75rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
+  color: var(--accent-orange);
 }
 
 .product-description {
@@ -850,7 +1020,7 @@ a {
 .size-options button:hover,
 .size-options button.active {
   background: var(--text-primary);
-  color: var(--bg-primary);
+  color: var(--text-light);
 }
 
 .product-meta {
@@ -960,11 +1130,12 @@ a {
   font-family: var(--font-heading);
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
+  color: var(--text-light);
 }
 
 .lookbook-overlay p {
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: rgba(255,255,255,0.8);
 }
 
 .no-content {
@@ -1004,7 +1175,7 @@ a {
   font-family: var(--font-heading);
   font-size: 1.25rem;
   margin: 2rem 0 1rem;
-  color: var(--accent-yellow);
+  color: var(--accent-orange);
 }
 
 .about-text p {
@@ -1042,16 +1213,17 @@ a {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
 }
 
 .login-card {
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   padding: 3rem;
   width: 100%;
   max-width: 400px;
   text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .login-logo {
@@ -1086,7 +1258,7 @@ a {
 .form-group textarea {
   width: 100%;
   padding: 1rem;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -1098,7 +1270,7 @@ a {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--text-primary);
+  border-color: var(--accent-orange);
 }
 
 .form-group textarea {
@@ -1162,9 +1334,9 @@ a {
 
 .admin-tabs button:hover,
 .admin-tabs button.active {
-  background: var(--text-primary);
-  border-color: var(--text-primary);
-  color: var(--bg-primary);
+  background: var(--accent-orange);
+  border-color: var(--accent-orange);
+  color: var(--text-light);
 }
 
 .admin-section {
@@ -1191,10 +1363,11 @@ a {
 }
 
 .admin-card {
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   overflow: hidden;
   position: relative;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .admin-card img {
@@ -1241,16 +1414,17 @@ a {
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .admin-card-actions button:hover {
-  background: var(--text-primary);
-  color: var(--bg-primary);
+  background: var(--accent-orange);
+  color: var(--text-light);
 }
 
 .admin-card-actions button.delete:hover {
   background: var(--accent-red);
-  color: var(--text-primary);
+  color: var(--text-light);
 }
 
 /* ============ MODAL ============ */
@@ -1260,7 +1434,7 @@ a {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1270,12 +1444,13 @@ a {
 }
 
 .modal {
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   width: 100%;
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
 }
 
 .modal-header {
@@ -1339,13 +1514,13 @@ a {
 .form-checkboxes input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  accent-color: var(--accent-yellow);
+  accent-color: var(--accent-orange);
 }
 
 .image-preview {
   margin-top: 1rem;
   padding: 0.5rem;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
 }
 
@@ -1366,9 +1541,10 @@ a {
 
 /* ============ FOOTER ============ */
 .footer {
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border);
-  margin-top: 4rem;
+  background: var(--bg-dark);
+  border-top: 1px solid var(--border-dark);
+  margin-top: 0;
+  color: var(--text-light);
 }
 
 .footer-container {
@@ -1390,7 +1566,7 @@ a {
 }
 
 .footer-brand p {
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.6);
   font-size: 0.9rem;
 }
 
@@ -1401,18 +1577,19 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-bottom: 1rem;
+  color: var(--text-light);
 }
 
 .footer-links a {
   display: block;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.6);
   font-size: 0.9rem;
   padding: 0.35rem 0;
   transition: color 0.3s ease;
 }
 
 .footer-links a:hover {
-  color: var(--text-primary);
+  color: var(--accent-orange);
 }
 
 .social-icons {
@@ -1426,25 +1603,25 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-primary);
-  color: var(--text-secondary);
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
   transition: all 0.3s ease;
 }
 
 .social-icons a:hover {
-  background: var(--text-primary);
-  color: var(--bg-primary);
+  background: var(--accent-orange);
+  color: var(--text-light);
 }
 
 .footer-bottom {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255,255,255,0.1);
   padding: 1.5rem;
   text-align: center;
 }
 
 .footer-bottom p {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.5);
 }
 
 @media (max-width: 900px) {
