@@ -584,9 +584,11 @@ const AdminLogin = ({ onLogin }) => {
 const AdminDashboard = ({ onLogout }) => {
   const [products, setProducts] = useState([]);
   const [lookbook, setLookbook] = useState([]);
+  const [videos, setVideos] = useState([]);
   const [activeTab, setActiveTab] = useState("products");
   const [showProductForm, setShowProductForm] = useState(false);
   const [showLookbookForm, setShowLookbookForm] = useState(false);
+  const [showVideoForm, setShowVideoForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -599,12 +601,14 @@ const AdminDashboard = ({ onLogout }) => {
 
   const fetchData = async () => {
     try {
-      const [productsRes, lookbookRes] = await Promise.all([
+      const [productsRes, lookbookRes, videosRes] = await Promise.all([
         axios.get(`${API}/products`),
-        axios.get(`${API}/lookbook`)
+        axios.get(`${API}/lookbook`),
+        axios.get(`${API}/videos?active_only=false`)
       ]);
       setProducts(productsRes.data);
       setLookbook(lookbookRes.data);
+      setVideos(videosRes.data);
     } catch (e) {
       console.error("Error fetching data:", e);
     } finally {
@@ -629,6 +633,16 @@ const AdminDashboard = ({ onLogout }) => {
       setLookbook(lookbook.filter(l => l.id !== id));
     } catch (e) {
       alert("Error deleting lookbook item");
+    }
+  };
+
+  const handleDeleteVideo = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this video?")) return;
+    try {
+      await axios.delete(`${API}/videos/${id}`, { headers });
+      setVideos(videos.filter(v => v.id !== id));
+    } catch (e) {
+      alert("Error deleting video");
     }
   };
 
