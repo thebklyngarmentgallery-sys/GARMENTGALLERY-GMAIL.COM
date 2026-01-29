@@ -242,6 +242,32 @@ async def get_categories():
         ]
     }
 
+# ============ VIDEO ROUTES ============
+
+@api_router.get("/videos", response_model=List[Video])
+async def get_videos(active_only: bool = True):
+    query = {"active": True} if active_only else {}
+    videos = await db.videos.find(query, {"_id": 0}).to_list(100)
+    for video in videos:
+        if isinstance(video.get('created_at'), str):
+            video['created_at'] = datetime.fromisoformat(video['created_at'])
+    return videos
+
+@api_router.post("/videos", response_model=Video)
+async def create_video(video: VideoCreate, payload: dict = Depends(verify_token)):
+    video_obj = Video(**video.model_dump())
+    doc = video_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.videos.insert_one(doc)
+    return video_obj
+
+@api_router.delete("/videos/{video_id}")
+async def delete_video(video_id: str, payload: dict = Depends(verify_token)):
+    result = await db.videos.delete_one({"id": video_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Video not found")
+    return {"message": "Video deleted successfully"}
+
 # ============ HEALTH CHECK ============
 
 @api_router.get("/")
