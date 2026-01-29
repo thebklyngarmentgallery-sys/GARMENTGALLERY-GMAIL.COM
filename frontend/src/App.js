@@ -157,6 +157,23 @@ const Home = () => {
         </ul>
         <Link to="/shop" className="btn btn-primary">SHOP NOW <ArrowRight size={18} /></Link>
       </section>
+
+      {/* Connect With Us Section */}
+      <section className="connect-section" data-testid="connect-section">
+        <span className="section-label red">GET IN TOUCH</span>
+        <h2>CONNECT WITH US</h2>
+        <p className="connect-text">Have questions? We'd love to hear from you. Reach out to our team.</p>
+        <a href="mailto:hello@bklyngarment.com" className="email-link">hello@bklyngarment.com</a>
+      </section>
+
+      {/* Brooklyn Street Scene */}
+      <section className="brooklyn-scene" data-testid="brooklyn-scene">
+        <p className="brooklyn-quote">We believe in quality over quantity, craftsmanship over trends, and community over competition.</p>
+        <p className="brooklyn-subtext">Born in Brooklyn. Made for anyone, anywhere in the world.</p>
+        <div className="brooklyn-image">
+          <img src={BROOKLYN_STREET_SCENE} alt="Brooklyn Street Scene" />
+        </div>
+      </section>
     </div>
   );
 };
