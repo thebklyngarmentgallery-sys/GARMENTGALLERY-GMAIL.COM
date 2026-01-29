@@ -370,6 +370,75 @@ a {
   background: var(--accent-orange);
 }
 
+/* ============ CONNECT SECTION ============ */
+.connect-section {
+  padding: 5rem 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.connect-section h2 {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.connect-text {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+.email-link {
+  font-family: 'Courier New', monospace;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
+}
+
+.email-link:hover {
+  color: var(--accent-red);
+}
+
+/* ============ BROOKLYN SCENE ============ */
+.brooklyn-scene {
+  padding: 4rem 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.brooklyn-quote {
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  max-width: 700px;
+}
+
+.brooklyn-subtext {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.brooklyn-image {
+  position: relative;
+  overflow: hidden;
+  border: 3px solid var(--accent-orange);
+  border-radius: 0;
+}
+
+.brooklyn-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* ============ PRODUCT GRID ============ */
 .product-grid {
   display: grid;
