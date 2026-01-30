@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, createContext, useContext } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import { Menu, X, Instagram, Twitter, ArrowRight, Plus, Edit2, Trash2, LogOut, Filter, ChevronDown, Play, Upload, Image } from "lucide-react";
+import { Menu, X, Instagram, Twitter, ArrowRight, Plus, Edit2, Trash2, LogOut, Filter, ChevronDown, Play, Upload, Image, ShoppingCart, Minus, Check } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -15,6 +15,60 @@ const BROOKLYN_STREET_SCENE = "https://images.unsplash.com/photo-1618554776245-6
 const BROOKLYN_LICENSE_PLATE = "https://customer-assets.emergentagent.com/job_brooklyn-apparel/artifacts/o3trk9s8_Screenshot_20260127_230457_DuckDuckGo.jpg";
 const BROOKLYN_BRIDGE_NIGHT = "https://images.unsplash.com/photo-1568746370642-e4c0851aef8b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwzfHxCcm9va2x5biUyMGJyaWRnZSUyMG5pZ2h0JTIwdXJiYW4lMjBjaXR5c2NhcGV8ZW58MHx8fHwxNzY5NzIyMzA0fDA&ixlib=rb-4.1.0&q=85";
 const BRICK_WALL_BG = "https://images.unsplash.com/photo-1665852690035-a951e991ccc7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzOTB8MHwxfHNlYXJjaHwyfHxicmljayUyMHdhbGwlMjBuZW9uJTIwc2lnbiUyMHVyYmFuJTIwZ3JhZmZpdGklMjBjb2xvcmZ1bHxlbnwwfHx8fDE3Njk3MjI3NDZ8MA&ixlib=rb-4.1.0&q=85";
+
+// ============ CART CONTEXT ============
+const CartContext = createContext();
+
+const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState(() => {
+    const saved = localStorage.getItem('bklyn_cart');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('bklyn_cart', JSON.stringify(cart));
+  }, [cart]);
+
+  const addToCart = (item) => {
+    setCart(prev => {
+      const existing = prev.find(i => 
+        i.product_id === item.product_id && 
+        i.size === item.size && 
+        i.color === item.color
+      );
+      if (existing) {
+        return prev.map(i => 
+          i === existing ? {...i, quantity: i.quantity + item.quantity} : i
+        );
+      }
+      return [...prev, item];
+    });
+  };
+
+  const removeFromCart = (index) => {
+    setCart(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const updateQuantity = (index, quantity) => {
+    if (quantity < 1) return;
+    setCart(prev => prev.map((item, i) => 
+      i === index ? {...item, quantity} : item
+    ));
+  };
+
+  const clearCart = () => setCart([]);
+
+  const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  return (
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount }}>
+      {children}
+    </CartContext.Provider>
+  );
+};
+
+const useCart = () => useContext(CartContext);
 
 // ============ NAVBAR ============
 const Navbar = () => {
