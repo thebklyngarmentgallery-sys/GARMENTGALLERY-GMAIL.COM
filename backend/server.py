@@ -127,6 +127,47 @@ class VideoCreate(BaseModel):
     description: str = ""
     active: bool = True
 
+# ============ ORDER & PAYMENT MODELS ============
+
+class OrderItem(BaseModel):
+    product_id: str
+    name: str
+    price: float
+    quantity: int
+    size: str
+    color: str = ""
+    image_url: str = ""
+
+class Order(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    items: List[OrderItem]
+    total: float
+    status: str = "pending"  # pending, paid, shipped, delivered, cancelled
+    payment_status: str = "pending"  # pending, paid, failed
+    session_id: str = ""
+    customer_email: str = ""
+    shipping_address: Dict = {}
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CheckoutRequest(BaseModel):
+    items: List[OrderItem]
+    origin_url: str
+
+class PaymentTransaction(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    session_id: str
+    order_id: str
+    amount: float
+    currency: str = "usd"
+    status: str = "pending"
+    payment_status: str = "pending"
+    metadata: Dict = {}
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # ============ AUTH HELPERS ============
 
 ADMIN_USERNAME = "admin"
