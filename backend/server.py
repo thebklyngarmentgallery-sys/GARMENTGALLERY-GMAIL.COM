@@ -325,6 +325,186 @@ async def delete_video(video_id: str, payload: dict = Depends(verify_token)):
         raise HTTPException(status_code=404, detail="Video not found")
     return {"message": "Video deleted successfully"}
 
+# ============ STRIPE PAYMENT ROUTES ============
+
+@api_router.post("/checkout")
+async def create_checkout(checkout_req: CheckoutRequest, request: Request):
+    """Create a Stripe checkout session for cart items"""
+    if not checkout_req.items:
+        raise HTTPException(status_code=400, detail="Cart is empty")
+    
+    # Calculate total from server-side product prices (security)
+    total = 0.0
+    verified_items = []
+    
+    for item in checkout_req.items:
+        # Get product from database to verify price
+        product = await db.products.find_one({"id": item.product_id}, {"_id": 0})
+        if product:
+            item_total = float(product['price']) * item.quantity
+            total += item_total
+            verified_items.append({
+                **item.model_dump(),
+                "price": float(product['price'])  # Use server-side price
+            })
+        else:
+            raise HTTPException(status_code=400, detail=f"Product {item.product_id} not found")
+    
+    # Create order in database
+    order_id = str(uuid.uuid4())
+    order = {
+        "id": order_id,
+        "items": verified_items,
+        "total": total,
+        "status": "pending",
+        "payment_status": "pending",
+        "session_id": "",
+        "customer_email": "",
+        "shipping_address": {},
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.orders.insert_one(order)
+    
+    # Build URLs
+    success_url = f"{checkout_req.origin_url}/order-success?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{checkout_req.origin_url}/cart"
+    
+    # Create Stripe checkout session
+    host_url = str(request.base_url)
+    webhook_url = f"{host_url}api/webhook/stripe"
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    
+    checkout_request = CheckoutSessionRequest(
+        amount=total,
+        currency="usd",
+        success_url=success_url,
+        cancel_url=cancel_url,
+        metadata={
+            "order_id": order_id,
+            "source": "bklyn_garment_gallery"
+        }
+    )
+    
+    session = await stripe_checkout.create_checkout_session(checkout_request)
+    
+    # Update order with session ID
+    await db.orders.update_one(
+        {"id": order_id},
+        {"$set": {"session_id": session.session_id}}
+    )
+    
+    # Create payment transaction record
+    transaction = {
+        "id": str(uuid.uuid4()),
+        "session_id": session.session_id,
+        "order_id": order_id,
+        "amount": total,
+        "currency": "usd",
+        "status": "pending",
+        "payment_status": "pending",
+        "metadata": {"order_id": order_id},
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.payment_transactions.insert_one(transaction)
+    
+    return {"checkout_url": session.url, "session_id": session.session_id, "order_id": order_id}
+
+@api_router.get("/checkout/status/{session_id}")
+async def get_checkout_status(session_id: str, request: Request):
+    """Get the status of a checkout session"""
+    host_url = str(request.base_url)
+    webhook_url = f"{host_url}api/webhook/stripe"
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    
+    status = await stripe_checkout.get_checkout_status(session_id)
+    
+    # Update order and transaction if payment is complete
+    if status.payment_status == "paid":
+        # Check if already processed
+        existing = await db.payment_transactions.find_one({
+            "session_id": session_id,
+            "payment_status": "paid"
+        })
+        
+        if not existing:
+            # Update transaction
+            await db.payment_transactions.update_one(
+                {"session_id": session_id},
+                {"$set": {"status": "complete", "payment_status": "paid"}}
+            )
+            
+            # Update order
+            await db.orders.update_one(
+                {"session_id": session_id},
+                {"$set": {"status": "paid", "payment_status": "paid"}}
+            )
+    
+    return {
+        "status": status.status,
+        "payment_status": status.payment_status,
+        "amount_total": status.amount_total,
+        "currency": status.currency
+    }
+
+@api_router.post("/webhook/stripe")
+async def stripe_webhook(request: Request):
+    """Handle Stripe webhooks"""
+    body = await request.body()
+    signature = request.headers.get("Stripe-Signature", "")
+    
+    host_url = str(request.base_url)
+    webhook_url = f"{host_url}api/webhook/stripe"
+    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+    
+    try:
+        webhook_response = await stripe_checkout.handle_webhook(body, signature)
+        
+        if webhook_response.payment_status == "paid":
+            session_id = webhook_response.session_id
+            
+            # Update transaction and order
+            await db.payment_transactions.update_one(
+                {"session_id": session_id},
+                {"$set": {"status": "complete", "payment_status": "paid"}}
+            )
+            
+            await db.orders.update_one(
+                {"session_id": session_id},
+                {"$set": {"status": "paid", "payment_status": "paid"}}
+            )
+        
+        return {"status": "success"}
+    except Exception as e:
+        logging.error(f"Webhook error: {e}")
+        return {"status": "error", "message": str(e)}
+
+# ============ ORDER ROUTES ============
+
+@api_router.get("/orders")
+async def get_orders(payload: dict = Depends(verify_token)):
+    """Get all orders (admin only)"""
+    orders = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return orders
+
+@api_router.get("/orders/{order_id}")
+async def get_order(order_id: str):
+    """Get a specific order"""
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return order
+
+@api_router.put("/orders/{order_id}/status")
+async def update_order_status(order_id: str, status: str, payload: dict = Depends(verify_token)):
+    """Update order status (admin only)"""
+    result = await db.orders.update_one(
+        {"id": order_id},
+        {"$set": {"status": status}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"message": "Order status updated"}
+
 # ============ HEALTH CHECK ============
 
 @api_router.get("/")
