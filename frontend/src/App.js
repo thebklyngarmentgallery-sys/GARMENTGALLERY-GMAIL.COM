@@ -73,6 +73,7 @@ const useCart = () => useContext(CartContext);
 // ============ NAVBAR ============
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { cartCount } = useCart();
 
   return (
     <nav className="navbar" data-testid="navbar">
@@ -88,6 +89,10 @@ const Navbar = () => {
         </div>
 
         <div className="nav-actions">
+          <Link to="/cart" className="cart-icon" data-testid="nav-cart">
+            <ShoppingCart size={24} />
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </Link>
           <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} data-testid="menu-toggle">
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
