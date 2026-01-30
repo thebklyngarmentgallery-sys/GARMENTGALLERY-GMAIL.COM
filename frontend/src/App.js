@@ -666,6 +666,173 @@ const About = () => (
   </div>
 );
 
+// ============ CART PAGE ============
+const Cart = () => {
+  const { cart, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckout = async () => {
+    if (cart.length === 0) {
+      alert("Your cart is empty");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API}/checkout`, {
+        items: cart.map(item => ({
+          product_id: item.product_id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          size: item.size,
+          color: item.color || "",
+          image_url: item.image_url || ""
+        })),
+        origin_url: window.location.origin
+      });
+
+      // Redirect to Stripe checkout
+      window.location.href = res.data.checkout_url;
+    } catch (e) {
+      alert("Error creating checkout: " + (e.response?.data?.detail || e.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="cart-page" data-testid="cart-page">
+      <div className="page-header">
+        <span className="section-label yellow">YOUR BAG</span>
+        <h1>CART</h1>
+      </div>
+
+      {cart.length === 0 ? (
+        <div className="empty-cart">
+          <ShoppingCart size={64} />
+          <h2>Your cart is empty</h2>
+          <p>Looks like you haven't added any items yet.</p>
+          <Link to="/shop" className="btn btn-primary">SHOP NOW</Link>
+        </div>
+      ) : (
+        <div className="cart-content">
+          <div className="cart-items">
+            {cart.map((item, index) => (
+              <div key={index} className="cart-item" data-testid={`cart-item-${index}`}>
+                <div className="cart-item-image">
+                  <img src={item.image_url} alt={item.name} />
+                </div>
+                <div className="cart-item-details">
+                  <h3>{item.name}</h3>
+                  <p className="cart-item-meta">Size: {item.size} {item.color && `| Color: ${item.color}`}</p>
+                  <p className="cart-item-price">${item.price.toFixed(2)}</p>
+                </div>
+                <div className="cart-item-quantity">
+                  <button onClick={() => updateQuantity(index, item.quantity - 1)}><Minus size={16} /></button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => updateQuantity(index, item.quantity + 1)}><Plus size={16} /></button>
+                </div>
+                <div className="cart-item-total">
+                  ${(item.price * item.quantity).toFixed(2)}
+                </div>
+                <button className="cart-item-remove" onClick={() => removeFromCart(index)}>
+                  <X size={20} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="cart-summary">
+            <h3>ORDER SUMMARY</h3>
+            <div className="summary-row">
+              <span>Subtotal</span>
+              <span>${cartTotal.toFixed(2)}</span>
+            </div>
+            <div className="summary-row">
+              <span>Shipping</span>
+              <span>Calculated at checkout</span>
+            </div>
+            <div className="summary-row total">
+              <span>Total</span>
+              <span>${cartTotal.toFixed(2)}</span>
+            </div>
+            <button 
+              className="btn btn-primary btn-full" 
+              onClick={handleCheckout}
+              disabled={loading}
+              data-testid="checkout-btn"
+            >
+              {loading ? "PROCESSING..." : "PROCEED TO CHECKOUT"}
+            </button>
+            <p className="secure-checkout">🔒 Secure checkout powered by Stripe</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ============ ORDER SUCCESS PAGE ============
+const OrderSuccess = () => {
+  const [searchParams] = useSearchParams();
+  const { clearCart } = useCart();
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const sessionId = searchParams.get('session_id');
+
+  useEffect(() => {
+    if (sessionId) {
+      checkPaymentStatus();
+      clearCart();
+    }
+  }, [sessionId]);
+
+  const checkPaymentStatus = async () => {
+    try {
+      const res = await axios.get(`${API}/checkout/status/${sessionId}`);
+      setStatus(res.data);
+    } catch (e) {
+      console.error("Error checking payment status:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div className="loading">Confirming your order...</div>;
+
+  return (
+    <div className="order-success" data-testid="order-success-page">
+      <div className="success-content">
+        <div className="success-icon">
+          <Check size={64} />
+        </div>
+        <h1>ORDER CONFIRMED!</h1>
+        <p>Thank you for your purchase from The Bklyn Garment Gallery.</p>
+        
+        {status && (
+          <div className="order-details">
+            <p><strong>Payment Status:</strong> {status.payment_status}</p>
+            <p><strong>Amount:</strong> ${(status.amount_total / 100).toFixed(2)}</p>
+          </div>
+        )}
+
+        <div className="success-info">
+          <h3>WHAT'S NEXT?</h3>
+          <ul>
+            <li>You'll receive an email confirmation shortly</li>
+            <li>Your order will be printed fresh in Brooklyn</li>
+            <li>Expected production time: 7-10 days</li>
+            <li>We'll email you tracking info when it ships</li>
+          </ul>
+        </div>
+
+        <Link to="/shop" className="btn btn-primary">CONTINUE SHOPPING</Link>
+      </div>
+    </div>
+  );
+};
+
 // ============ ADMIN LOGIN ============
 const AdminLogin = ({ onLogin }) => {
   const [username, setUsername] = useState("");
