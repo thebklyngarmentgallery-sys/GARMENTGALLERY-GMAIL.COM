@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
@@ -8,11 +8,12 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
+from typing import List, Optional, Dict
 import uuid
 from datetime import datetime, timezone
 import jwt
 import shutil
+from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -31,6 +32,9 @@ db = client[os.environ['DB_NAME']]
 
 # JWT Secret
 JWT_SECRET = os.environ.get('JWT_SECRET', 'bklyn-garment-secret-2020')
+
+# Stripe API Key
+STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', '')
 
 # Get backend URL for generating file URLs
 BACKEND_URL = os.environ.get('BACKEND_URL', '')
