@@ -457,9 +457,14 @@ const Shop = () => {
 // ============ PRODUCT DETAIL PAGE ============
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [added, setAdded] = useState(false);
 
   useEffect(() => {
     fetchProduct();
@@ -472,11 +477,34 @@ const ProductDetail = () => {
       if (res.data.sizes?.length > 0) {
         setSelectedSize(res.data.sizes[0]);
       }
+      if (res.data.colors?.length > 0) {
+        setSelectedColor(res.data.colors[0]);
+      }
     } catch (e) {
       console.error("Error fetching product:", e);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      alert("Please select a size");
+      return;
+    }
+    
+    addToCart({
+      product_id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: quantity,
+      size: selectedSize,
+      color: selectedColor,
+      image_url: product.image_url
+    });
+    
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
   };
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -511,8 +539,40 @@ const ProductDetail = () => {
           </div>
         )}
 
-        <button className="btn btn-primary btn-full" data-testid="add-to-cart-btn">
-          ADD TO CART <ArrowRight size={18} />
+        {product.colors?.length > 0 && (
+          <div className="color-selector">
+            <label>COLOR</label>
+            <div className="color-options">
+              {product.colors.map(color => (
+                <button 
+                  key={color}
+                  className={`color-btn ${selectedColor === color ? "active" : ""}`}
+                  style={{backgroundColor: color.toLowerCase()}}
+                  onClick={() => setSelectedColor(color)}
+                  title={color}
+                >
+                  {selectedColor === color && <Check size={16} />}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="quantity-selector">
+          <label>QUANTITY</label>
+          <div className="quantity-controls">
+            <button onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus size={18} /></button>
+            <span>{quantity}</span>
+            <button onClick={() => setQuantity(quantity + 1)}><Plus size={18} /></button>
+          </div>
+        </div>
+
+        <button 
+          className={`btn btn-primary btn-full ${added ? 'added' : ''}`} 
+          onClick={handleAddToCart}
+          data-testid="add-to-cart-btn"
+        >
+          {added ? <><Check size={18} /> ADDED TO CART</> : <>ADD TO CART <ArrowRight size={18} /></>}
         </button>
 
         <div className="product-meta">
