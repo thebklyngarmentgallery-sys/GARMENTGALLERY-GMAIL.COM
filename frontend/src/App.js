@@ -462,6 +462,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
@@ -474,6 +475,7 @@ const ProductDetail = () => {
     try {
       const res = await axios.get(`${API}/products/${id}`);
       setProduct(res.data);
+      setSelectedImage(res.data.image_url);
       if (res.data.sizes?.length > 0) {
         setSelectedSize(res.data.sizes[0]);
       }
@@ -510,11 +512,31 @@ const ProductDetail = () => {
   if (loading) return <div className="loading">Loading...</div>;
   if (!product) return <div className="not-found">Product not found</div>;
 
+  // Get all images - combine image_url and images array
+  const allImages = product.images && product.images.length > 0 
+    ? product.images 
+    : [product.image_url];
+
   return (
     <div className="product-detail" data-testid="product-detail-page">
-      <div className="product-detail-image">
-        <img src={product.image_url} alt={product.name} />
-        {product.new_arrival && <span className="badge-new">NEW</span>}
+      <div className="product-gallery">
+        <div className="product-main-image">
+          <img src={selectedImage} alt={product.name} />
+          {product.new_arrival && <span className="badge-new">NEW</span>}
+        </div>
+        {allImages.length > 1 && (
+          <div className="product-thumbnails">
+            {allImages.map((img, index) => (
+              <button 
+                key={index}
+                className={`thumbnail ${selectedImage === img ? 'active' : ''}`}
+                onClick={() => setSelectedImage(img)}
+              >
+                <img src={img} alt={`${product.name} ${index + 1}`} />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       <div className="product-detail-info">
         <span className="product-category-label">{product.category.toUpperCase()}</span>
