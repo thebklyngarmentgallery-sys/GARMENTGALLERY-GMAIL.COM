@@ -68,6 +68,7 @@ class Product(BaseModel):
     image_url: str
     sizes: List[str] = ["S", "M", "L", "XL", "XXL"]
     colors: List[str] = []
+    images: List[str] = []
     featured: bool = False
     new_arrival: bool = False
     in_stock: bool = True
@@ -79,6 +80,7 @@ class ProductCreate(BaseModel):
     price: float
     category: str
     image_url: str
+    images: List[str] = []
     sizes: List[str] = ["S", "M", "L", "XL", "XXL"]
     colors: List[str] = []
     featured: bool = False
@@ -91,6 +93,7 @@ class ProductUpdate(BaseModel):
     price: Optional[float] = None
     category: Optional[str] = None
     image_url: Optional[str] = None
+    images: Optional[List[str]] = None
     sizes: Optional[List[str]] = None
     colors: Optional[List[str]] = None
     featured: Optional[bool] = None
